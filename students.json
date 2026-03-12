@@ -1,0 +1,57 @@
+
+import { useState, useEffect } from "react";
+
+function StudentForm({ addStudent, updateStudent, editingStudent }) {
+  const [student, setStudent] = useState({
+    name: "",
+    email: "",
+    age: ""
+  });
+
+  useEffect(() => {
+    if (editingStudent) {
+      setStudent(editingStudent);
+    }
+  }, [editingStudent]);
+
+  const handleChange = (e) => {
+    setStudent({ ...student, [e.target.name]: e.target.value });
+  };
+
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!student.name || !student.email || !student.age) {
+      alert("All fields required");
+      return;
+    }
+
+    if (!validateEmail(student.email)) {
+      alert("Invalid email");
+      return;
+    }
+
+    if (editingStudent) {
+      updateStudent(student);
+    } else {
+      addStudent(student);
+    }
+
+    setStudent({ name: "", email: "", age: "" });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{marginBottom:"20px"}}>
+      <input name="name" placeholder="Name" value={student.name} onChange={handleChange} />
+      <input name="email" placeholder="Email" value={student.email} onChange={handleChange} />
+      <input name="age" type="number" placeholder="Age" value={student.age} onChange={handleChange} />
+      <button type="submit">Save</button>
+    </form>
+  );
+}
+
+export default StudentForm;
